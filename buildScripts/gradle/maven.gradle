@@ -353,3 +353,42 @@ setGeneratePomFileAndDepends('dynamicHost')
 setGeneratePomFileAndDepends('dynamicLoader')
 setGeneratePomFileAndDepends('dynamicLoaderImpl')
 setGeneratePomFileAndDepends('dynamicManager')
+
+// ---------------------------------------
+
+apply plugin: 'com.jfrog.bintray'
+ext.bintrayKey = System.getenv('API_TOKEN')
+
+bintray {
+    user = "donglua" //this usually comes from gradle.properties file in ~/.gradle
+    key = "$bintrayKey" //this usually comes from gradle.properties file in ~/.gradle
+
+    dryRun = false //Whether to run this as dry-run, without deploying
+    publish = true //If version should be auto published after an upload
+
+    publications = ['gradlePlugin',
+                    'common',
+                    'loadParameters',
+                    'coreLoader',
+                    'coreManager',
+                    'runtime',
+                    'transformKit',
+                    'transformKitTest',
+                    'transform',
+                    'dynamicHost',
+                    'dynamicLoader',
+                    'dynamicLoaderImpl',
+                    'dynamicManager']
+
+    pkg {
+        repo = 'maven'
+        name = 'gradlePlugin'
+        version {
+            name = publicationVersion
+        }
+        userOrg = user
+        licenses = ["MIT"]
+        vcsUrl = "https://github.com/Tencent/Shadow.git"
+        githubRepo = "Tencent/Shadow"
+    }
+}
