@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/JingZhuanDuoYing/Shadow.svg?branch=dev)](https://travis-ci.org/JingZhuanDuoYing/Shadow)
+
 # Shadow
 
 Shadow的设计细节将在掘金持续分享:https://juejin.im/user/5d12faee6fb9a07ed8425178/posts
