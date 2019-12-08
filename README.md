@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/JingZhuanDuoYing/Shadow.svg?branch=dev)](https://travis-ci.org/JingZhuanDuoYing/Shadow)
+[![Build Status](https://travis-ci.org/JingZhuanDuoYing/Shadow.svg?branch=release)](https://travis-ci.org/JingZhuanDuoYing/Shadow)
 
 # Shadow
 
