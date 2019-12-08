@@ -37,7 +37,7 @@ before_install:
 #  - adb shell input keyevent 82 &
 
 script:
-  - "./gradlew clean && ./gradlew build -PdisablePreDex --stacktrace"
+  - "./gradlew clean && ./gradlew build -PdisablePreDex --stacktrace" && ./gradlew bintrayUpload -PbintrayUser=donglua  -PdryRun=false
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
