@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/JingZhuanDuoYing/Shadow.svg?branch=release)](https://travis-ci.org/JingZhuanDuoYing/Shadow)
+[ ![Download](https://api.bintray.com/packages/donglua/maven/gradlePlugin/images/download.svg) ](https://bintray.com/donglua/maven/gradlePlugin/_latestVersion)
 
 # Shadow
 
