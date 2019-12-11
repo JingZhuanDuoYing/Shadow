@@ -1,21 +1,3 @@
-/*
- * Tencent is pleased to support the open source community by making Tencent Shadow available.
- * Copyright (C) 2019 THL A29 Limited, a Tencent company.  All rights reserved.
- *
- * Licensed under the BSD 3-Clause License (the "License"); you may not use
- * this file except in compliance with the License. You may obtain a copy of
- * the License at
- *
- *     https://opensource.org/licenses/BSD-3-Clause
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
-
 package com.tencent.shadow.dynamic.manager;
 
 import android.content.ComponentName;
@@ -28,33 +10,40 @@ import com.tencent.shadow.core.common.Logger;
 import com.tencent.shadow.core.common.LoggerFactory;
 import com.tencent.shadow.dynamic.host.FailedException;
 import com.tencent.shadow.dynamic.host.PluginManagerImpl;
-import com.tencent.shadow.dynamic.host.PluginProcessService;
-import com.tencent.shadow.dynamic.host.PpsController;
 import com.tencent.shadow.dynamic.host.PpsStatus;
+import com.tencent.shadow.dynamic.host.MultiLoaderPluginProcessService;
+import com.tencent.shadow.dynamic.host.MultiLoaderPpsController;
 import com.tencent.shadow.dynamic.loader.PluginLoader;
 
-public abstract class PluginManagerThatUseDynamicLoader extends BaseDynamicPluginManager implements PluginManagerImpl {
 
+abstract public class PluginManagerThatSupportMultiLoader extends BaseDynamicPluginManager implements PluginManagerImpl {
     private static final Logger mLogger = LoggerFactory.getLogger(PluginManagerThatUseDynamicLoader.class);
-    /**
-     * 插件进程PluginProcessService的接口
-     */
-    protected PpsController mPpsController;
 
     /**
-     * 插件加载服务端接口6
+     * 插件进程MultiLoaderPluginProcessService的接口
+     */
+    protected MultiLoaderPpsController mPpsController;
+
+    /**
+     * 插件加载服务端接口
      */
     protected PluginLoader mPluginLoader;
 
-    protected PluginManagerThatUseDynamicLoader(Context context) {
+    public PluginManagerThatSupportMultiLoader(Context context) {
         super(context);
     }
 
+    /**
+     * 多Loader的PPS，需要hack多个RuntimeContainer，因此需要使用pluginKey来作为插件业务的身份标识
+     * Note：一个插件包有一份loader、一份runtime、多个pluginPart，该key与插件包一一对应
+     */
+    public abstract String getPluginKey();
+
     @Override
     protected void onPluginServiceConnected(ComponentName name, IBinder service) {
-        mPpsController = PluginProcessService.wrapBinder(service);
+        mPpsController = MultiLoaderPluginProcessService.wrapBinder(service);
         try {
-            mPpsController.setUuidManager(new UuidManagerBinder(PluginManagerThatUseDynamicLoader.this));
+            mPpsController.setUuidManagerForPlugin(getPluginKey(), new UuidManagerBinder(PluginManagerThatSupportMultiLoader.this));
         } catch (DeadObjectException e) {
             if (mLogger.isErrorEnabled()) {
                 mLogger.error("onServiceConnected RemoteException:" + e);
@@ -70,7 +59,7 @@ public abstract class PluginManagerThatUseDynamicLoader extends BaseDynamicPlugi
         }
 
         try {
-            IBinder iBinder = mPpsController.getPluginLoader();
+            IBinder iBinder = mPpsController.getPluginLoaderForPlugin(getPluginKey());
             if (iBinder != null) {
                 mPluginLoader = new BinderPluginLoader(iBinder);
             }
@@ -91,9 +80,9 @@ public abstract class PluginManagerThatUseDynamicLoader extends BaseDynamicPlugi
         if (mLogger.isInfoEnabled()) {
             mLogger.info("loadRunTime mPpsController:" + mPpsController);
         }
-        PpsStatus ppsStatus = mPpsController.getPpsStatus();
+        PpsStatus ppsStatus = mPpsController.getPpsStatusForPlugin(getPluginKey());
         if (!ppsStatus.runtimeLoaded) {
-            mPpsController.loadRuntime(uuid);
+            mPpsController.loadRuntimeForPlugin(getPluginKey(), uuid);
         }
     }
 
@@ -102,11 +91,11 @@ public abstract class PluginManagerThatUseDynamicLoader extends BaseDynamicPlugi
             mLogger.info("loadPluginLoader mPluginLoader:" + mPluginLoader);
         }
         if (mPluginLoader == null) {
-            PpsStatus ppsStatus = mPpsController.getPpsStatus();
+            PpsStatus ppsStatus = mPpsController.getPpsStatusForPlugin(getPluginKey());
             if (!ppsStatus.loaderLoaded) {
-                mPpsController.loadPluginLoader(uuid);
+                mPpsController.loadPluginLoaderForPlugin(getPluginKey(), uuid);
             }
-            IBinder iBinder = mPpsController.getPluginLoader();
+            IBinder iBinder = mPpsController.getPluginLoaderForPlugin(getPluginKey());
             mPluginLoader = new BinderPluginLoader(iBinder);
         }
     }
