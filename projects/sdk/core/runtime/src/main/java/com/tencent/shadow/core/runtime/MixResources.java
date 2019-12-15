@@ -281,4 +281,23 @@ public class MixResources extends ResourcesWrapper {
             return mHostResources.openRawResourceFd(id);
         }
     }
+
+    @Override
+    public void getValue(String name, TypedValue outValue, boolean resolveRefs) throws NotFoundException {
+        try {
+            super.getValue(name, outValue, resolveRefs);
+        } catch (NotFoundException e) {
+            mHostResources.getValue(name, outValue, resolveRefs);
+        }
+    }
+
+
+    @Override
+    public void getValueForDensity(int id, int density, TypedValue outValue, boolean resolveRefs) throws NotFoundException {
+        try {
+            super.getValueForDensity(id, density, outValue, resolveRefs);
+        } catch (NotFoundException e) {
+            mHostResources.getValueForDensity(id, density, outValue, resolveRefs);
+        }
+    }
 }
