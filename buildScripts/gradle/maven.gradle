@@ -442,7 +442,7 @@ bintray {
 
     pkg {
         repo = 'maven'
-        name = 'gradlePlugin'
+        name = 'shadow'
         version {
             name = publicationVersion
         }
