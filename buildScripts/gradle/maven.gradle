@@ -100,8 +100,8 @@ def sourceTestJar(String name, String path) {
         description = "package ${name} source to jar"
         from "$path/src/test/java"
         from "$path/src/test/kotlin"
-        destinationDir = file("$path/build/libs/")
-        classifier = 'testSources'
+        destinationDir = file("$path/build/libs/test")
+        classifier = 'sources'
     }
 }
 
