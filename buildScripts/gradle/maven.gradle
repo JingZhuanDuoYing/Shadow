@@ -419,7 +419,7 @@ bintray {
                     'runtime',
                     'activityContainer',
                     'transformKit',
-                    'transformKitTest',
+                    // 'transformKitTest',
                     'transform',
                     'dynamicHost',
                     'dynamicHostMultiLoaderExt',
