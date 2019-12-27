@@ -446,6 +446,7 @@ bintray {
                     'coreManager',
                     'runtime',
                     'activityContainer',
+                    'systemClassStub',
                     'transformKit',
                     'transformKitTest',
                     'transform',
