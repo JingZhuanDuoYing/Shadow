@@ -125,8 +125,12 @@ abstract class ShadowPluginLoader(hostAppContext: Context) : DelegateProvider, D
             pluginParts?.let {
                 val application = pluginParts.application
                 application.attachBaseContext(mHostAppContext)
-                mPluginContentProviderManager.createContentProviderAndCallOnCreate(
-                        application, partKey, pluginParts)
+                try {
+                    mPluginContentProviderManager.createContentProviderAndCallOnCreate(
+                            application, partKey, pluginParts)
+                } catch (e: Exception) {
+                    mLogger.error("createContentProviderAndCallOnCreate", e)
+                }
                 application.onCreate()
             }
         }
